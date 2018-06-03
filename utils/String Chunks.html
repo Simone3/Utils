@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<!-- Info -->
+		<meta charset="UTF-8">
+		<title>String Chunks</title>
+	
+		<!-- Imports -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!-- Logic -->
+		<script>
+		
+			function chunkString(str, length) {
+				
+				var result = [];
+				for(var i = 0; i < str.length; i += length) {
+					
+					result.push(str.substring(i, i + length));
+				}
+				
+				return result;
+			}
+
+			$(document).ready(function() {
+			
+				// Get inputs
+				var source = $('#source');
+				var target = $('#target');
+				var length = $('#length');
+				var before = $('#before');
+				var after = $('#after');
+			
+				// Logic callback
+				var utilLogicCallback = function() {
+
+					var lengthValue = parseInt(length.val());
+					
+					if(lengthValue > 0) {
+						
+						var chunks = chunkString(source.val(), lengthValue);
+					
+						var result = "";
+						for(var i = 0; i < chunks.length; i++) {
+						
+							result += before.val() + chunks[i] + after.val();
+						}
+					
+						target.val(result);
+					}
+					else {
+					
+						target.val("Set valid length!");
+					}
+				}
+				
+				// Bind logic callback
+				source.bind('input propertychange', utilLogicCallback);
+				length.bind('input propertychange', utilLogicCallback);
+				before.bind('input propertychange', utilLogicCallback);
+				after.bind('input propertychange', utilLogicCallback);
+			});
+		
+		</script>
+		
+		<!-- Styles -->
+		<style>
+		
+		
+		</style>
+	
+	</head>
+	
+	<body>
+
+		<div class="container-fluid">
+		
+			<div class="container-fluid">
+				<h3>String Chunks</h1>
+			</div>
+			
+			<div class="container-fluid">
+				<input id="length" type="number" placeholder="Length"></input>
+				<label for="input">Length of each chunk</label>
+			</div>
+			<div class="container-fluid">
+				<input id="before" type="text" placeholder="Before"></input>
+				<label for="input">String to print before each chunk</label>
+			</div>
+			<div class="container-fluid">
+				<input id="after" type="text" placeholder="After"></input>
+				<label for="input">String to print after each chunk</label>
+			</div>
+			<div class="container-fluid">
+				<textarea id="source" rows="20" cols="180" placeholder="Source"></textarea>
+			</div>
+			<div class="container-fluid">
+				<textarea id="target" rows="20" cols="180" placeholder="Target" readonly></textarea>
+			</div>
+			
+		</div>
+
+	</body>
+</html>
