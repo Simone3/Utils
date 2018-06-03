@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<!-- Info -->
+		<meta charset="UTF-8">
+		<title>Unwrap Text</title>
+	
+		<!-- Imports -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!-- Logic -->
+		<script>
+
+			$(document).ready(function() {
+			
+				// Get inputs
+				var unwrapSource = $('#unwrapSource');
+				var unwrapTarget = $('#unwrapTarget');
+			
+				// Logic callback
+				var utilLogicCallback = function() {
+
+					var targetText = unwrapSource.val()
+										.replace(/^\s*[\r\n]/gm, '')        // remove blank lines
+										.replace(/^\s*(.*?)\s*$/gm, '$1')   // remove spaces at beginning and/or end of a line
+										.replace(/\n/g, ' ');               // remove newlines
+				
+					unwrapTarget.val(targetText);              
+				}
+				
+				// Bind logic callback
+				unwrapSource.bind('input propertychange', utilLogicCallback);
+			});
+		
+		</script>
+		
+		<!-- Styles -->
+		<style>
+		
+		
+		</style>
+	
+	</head>
+	
+	<body>
+
+		<div class="container-fluid">
+		
+			<div class="container-fluid">
+				<h3>Unwrap Text</h1>
+			</div>
+			
+			<div class="container-fluid">
+				<textarea id="unwrapSource" rows="20" cols="180" placeholder="Source"></textarea>
+			</div>
+			<div class="container-fluid">
+				<textarea id="unwrapTarget" rows="20" cols="180" placeholder="Target" readonly></textarea>
+			</div>
+			
+		</div>
+
+	</body>
+</html>
