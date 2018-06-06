@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<!-- Info -->
+		<meta charset="UTF-8">
+		<title>TV Show Names</title>
+	
+		<!-- Imports -->
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+		<!-- Logic -->
+		<script>
+		
+			function formatNumber(n) {
+			
+				if(n < 10) {
+					
+					return '0'+n;
+				}
+				else {
+					return n;
+				}
+			}
+		
+			$(document).ready(function() {
+			
+				// Get inputs
+				var source = $('#source');
+				var target = $('#target');
+				var showName = $('#show_name');
+				var seasonPrefix = $('#season_prefix');
+				var episodePrefix = $('#episode_prefix');
+				var separator = $('#separator');
+			
+				// Logic callback
+				var utilLogicCallback = function() {
+
+					var result = '';
+					
+					var sourceValue = source.val();
+					var showNameValue = showName.val();
+					var seasonPrefixValue = seasonPrefix.val();
+					var episodePrefixValue = episodePrefix.val();
+					var separatorValue = separator.val();
+					
+					// Split text on lines like "Season 10" (use regex negative-lookahead to match the season number but not actually capture it)
+					var seasons = sourceValue.split(/^Season (?=[0-9]+)/gm);
+					for(var i = 1; i < seasons.length; i++) {
+						
+						var seasonData = seasons[i];
+						
+						// Season text starts with the season number (see split regex)
+						var seasonNumRegex = /^[0-9]+/;
+						var seasonNumMatches = seasonNumRegex.exec(seasonData);
+						var seasonNum = seasonNumMatches[0];
+
+						// Regex for episodes
+						var regex = /^\s*[0-9]+\s+(?:[0-9]+\s+)?([0-9]+)\s+(?:([0-9]+)\s+)?"([^"]+?)"/gm;
+						//            -----1----- ------2------ -----3----- ------4------- -----5----    
+						// 1 = number overall (don't care)
+						// 2 = OPTIONAL other number overall when 2 eps merged with same title (don't care)
+						// 3 = number in season
+						// 4 = OPTIONAL other number in season when 2 eps merged with same title
+						// 5 = episode name
+						
+						// Get all episodes in the season text and add them to the result
+						var matches;
+						do {
+						
+							matches = regex.exec(seasonData);
+							if(matches) {
+							
+								var epNum = formatNumber(matches[1]);
+								var optionalSecondEpNum = matches[2];
+								var epName = matches[3];
+								
+								if(optionalSecondEpNum) {
+								
+									epNum += "&" + formatNumber(optionalSecondEpNum);
+								}
+								
+								result += showNameValue + seasonPrefixValue + formatNumber(seasonNum) + episodePrefixValue + epNum + separatorValue + epName + '\n';
+							}
+						}
+						while(matches);
+						
+					}
+					
+					target.val(result);
+				};
+				
+				// Bind logic callback
+				source.bind('input propertychange', utilLogicCallback);
+				showName.bind('input propertychange', utilLogicCallback);
+				seasonPrefix.bind('input propertychange', utilLogicCallback);
+				episodePrefix.bind('input propertychange', utilLogicCallback);
+				separator.bind('input propertychange', utilLogicCallback);
+			});
+		
+		</script>
+		
+		<!-- Styles -->
+		<style>
+		
+		
+		</style>
+	
+	</head>
+	
+	<body>
+
+		<div class="container-fluid">
+		
+			<div class="container-fluid">
+				<h3>TV Show Names</h1>
+				<p>Copy and paste a whole "List of ... episodes" Wikipedia page, like <a href="https://en.wikipedia.org/wiki/List_of_Breaking_Bad_episodes">https://en.wikipedia.org/wiki/List_of_Breaking_Bad_episodes</a>, and the util will extract the episode names (if it was written in the "normal" format).</p>
+			</div>
+			
+			<div class="container-fluid">
+				<input id="show_name" type="text" placeholder="TV Show Name"></input>
+				<label for="show_name">String before each name</label>
+			</div>
+			<div class="container-fluid">
+				<input id="season_prefix" type="text" value="S"></input>
+				<label for="season_prefix">Prefix for season number</label>
+			</div>
+			<div class="container-fluid">
+				<input id="episode_prefix" type="text" value="E"></input>
+				<label for="episode_prefix">Prefix for episode number</label>
+			</div>
+			<div class="container-fluid">
+				<input id="separator" type="text" value=" - "></input>
+				<label for="separator">Separator between episode number and episode name</label>
+			</div>
+			<div class="container-fluid">
+				<textarea id="source" rows="20" cols="180" placeholder="Source"></textarea>
+			</div>
+			<div class="container-fluid">
+				<textarea id="target" rows="20" cols="180" placeholder="Target" readonly></textarea>
+			</div>
+			
+		</div>
+
+	</body>
+</html>
