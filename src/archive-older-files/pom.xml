@@ -16,7 +16,7 @@
 	<packaging>jar</packaging>
 
 	<name>Archive Older Files</name>
-	<description>Moves or deletes all files from a folder except the N most recent</description>
+	<description>Moves or deletes all files/folders from a folder except the N most recent</description>
 	<properties>
 
 		<!-- Standard project settings -->

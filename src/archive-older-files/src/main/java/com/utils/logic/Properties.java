@@ -22,17 +22,22 @@ public class Properties {
 	private String sourceDirectoryName;
 	
 	/**
-	 * A RegEx to match files in the source directory
+	 * A RegEx to match files/folders in the source directory
 	 */
 	private String fileNamePattern;
 	
 	/**
-	 * The number of most recent files to keep (the util orders by date modified, moves all files except the first {@code numberMostRecentFilesToKeep})
+	 * Whether the util should consider just files, just directories or both mixed. Defaults to just files.
+	 */
+	private FileType fileType = FileType.FILES;
+	
+	/**
+	 * The number of most recent files/folders to keep (the util orders by date modified, moves all files/folders except the first {@code numberMostRecentFilesToKeep})
 	 */
 	private Integer numberMostRecentFilesToKeep;
 	
 	/**
-	 * The action to be performed on files to be archived
+	 * The action to be performed on files/folders to be archived
 	 */
 	private ArchiveAction archiveAction;
 	
@@ -42,10 +47,24 @@ public class Properties {
 	private String targetDirectoryName;
 	
 	/**
+	 * When {@code archiveAction} = {@code MOVE}, this specifies if the files/folders are to be moved directly to the target folder (false, default),
+	 * or if a new subdirectory with the current time should be created inside it.
+	 */
+	private Boolean useTargetDirectoryTimestampSubdirectories;
+	
+	/**
 	 * Possible values of the archive action properry
 	 */
 	public enum ArchiveAction {
 		
 		MOVE, DELETE;
+	}
+	
+	/**
+	 * Possible values of the type of files to be considered
+	 */
+	public enum FileType {
+		
+		FILES, DIRECTORIES, BOTH;
 	}
 }

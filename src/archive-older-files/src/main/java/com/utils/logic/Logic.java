@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -12,25 +16,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.utils.logic.Properties.ArchiveAction;
+import com.utils.logic.Properties.FileType;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Entry point for the util logic
+ * Entry point for the util logic.
+ * This util moves or deletes all files/folders from a folder except the N most recent.
  */
+@Slf4j
+@AllArgsConstructor
 public class Logic {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Logic.class);
+	private static final DateTimeFormatter SUBDIRECTORY_NAME_DATE_PATTERN = DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss.S");
 	
 	private final Properties properties;
-	
-	public Logic(Properties properties) {
-		
-		this.properties = properties;
-	}
 	
 	/**
 	 * Starts the util logic
@@ -45,7 +49,7 @@ public class Logic {
 		}
 		catch(Exception e) {
 			
-			LOGGER.error("ERROR: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
+			log.error("ERROR: {} - {}", e.getClass().getSimpleName(), e.getMessage(), e);
 		}
 	}
 	
@@ -60,7 +64,7 @@ public class Logic {
 		
 		var directory = getDirectory(directoryName);
 		
-		LOGGER.info("Start checking \"{}\"...", directory.getAbsolutePath());
+		log.info("Start checking \"{}\"...", directory.getAbsolutePath());
 		
 		return directory;
 	}
@@ -72,12 +76,22 @@ public class Logic {
 	private File getTargetDirectory() {
 		
 		var directoryName = properties.getTargetDirectoryName();
-		
 		Assert.isTrue(!StringUtils.isBlank(directoryName), "A target directory name must be specified via properties");
+		var directory = getDirectory(directoryName);
 		
-		return getDirectory(directoryName);
+		var useTargetDirectoryTimestampSubdirectories = properties.getUseTargetDirectoryTimestampSubdirectories();
+		if(useTargetDirectoryTimestampSubdirectories != null && useTargetDirectoryTimestampSubdirectories) {
+			
+			ZonedDateTime now = LocalDateTime.now().atZone(ZoneId.systemDefault());
+			var subdirectoryName = now.format(SUBDIRECTORY_NAME_DATE_PATTERN);
+			return createDirectory(directory.getAbsolutePath() + File.separator + subdirectoryName);
+		}
+		else {
+		
+			return directory;
+		}
 	}
-	
+
 	/**
 	 * Helper to get and validate a directory
 	 * @param directoryName the directory name
@@ -94,34 +108,99 @@ public class Logic {
 	}
 	
 	/**
+	 * Helper to create a directory
+	 * @param directoryName the directory name
+	 * @return the valid directory
+	 */
+	private File createDirectory(String directoryName) {
+		
+		var directory = new File(directoryName);
+		
+		Assert.isTrue(!directory.exists(), directoryName + " already exists");
+		
+		if(properties.isSafeMode()) {
+
+			log.info("[Safe Mode] This would create subdirectory \"{}\"", directory);
+		}
+		else {
+
+			var created = directory.mkdir();
+			
+			Assert.isTrue(created, directoryName + " was not created");
+		}
+		
+		return directory;
+	}
+	
+	/**
 	 * Gets all matching files in the directory, with validation
 	 * @param directory the source directory
 	 * @return the list of matching files
 	 */
 	private List<File> getFiles(File directory) {
-		
+
+		var fileType = properties.getFileType();
 		var fileNamePatternString = properties.getFileNamePattern();
-		var fileNamePattern = Pattern.compile(fileNamePatternString);
 		
-		var files = Stream.of(directory.listFiles())
-			.filter(file -> isFileValid(file, fileNamePattern))
+		// Get all files and folders in the source directory
+		var filesStream = Stream.of(directory.listFiles());
+		
+		// Filter by file type if necessary
+		if(fileType != FileType.BOTH) {
+			
+			log.info("Considering only {}...", fileType);
+			filesStream = filesStream.filter(file -> isFileTypeValid(file, fileType));
+		}
+		
+		// Filter by file name if necessary
+		if(!StringUtils.isBlank(fileNamePatternString)) {
+
+			var fileNamePattern = Pattern.compile(fileNamePatternString);
+			log.info("Considering only files that match {}...", fileNamePattern);
+			filesStream = filesStream.filter(file -> isFileNameValid(file, fileNamePattern));
+		}
+		
+		// Sort and collect all matching files
+		var files = filesStream
 			.sorted(Comparator.comparingLong(File::lastModified).reversed())
 			.collect(Collectors.toList());
 
-		LOGGER.info("Found {} files that match {}", files.size(), fileNamePattern);
+		log.info("Found {} files that match the constraints", files.size());
 		
 		return files;
 	}
 	
 	/**
-	 * Helper to filter files
+	 * Helper to filter files by desired type
+	 * @param file the current file
+	 * @param fileType the type of files to be considered
+	 * @return true if the file is a match
+	 */
+	private boolean isFileTypeValid(File file, FileType fileType) {
+		
+		if(fileType == FileType.FILES) {
+			
+			return file.isFile();
+		}
+		else if(fileType == FileType.DIRECTORIES) {
+			
+			return file.isDirectory();
+		}
+		else {
+			
+			throw new IllegalStateException("Unhandled file type: " + fileType);
+		}
+	}
+
+	/**
+	 * Helper to filter files by desired file name
 	 * @param file the current file
 	 * @param fileNamePattern the RegEx
 	 * @return true if the file is a match
 	 */
-	private boolean isFileValid(File file, Pattern fileNamePattern) {
+	private boolean isFileNameValid(File file, Pattern fileNamePattern) {
 		
-		return file.isFile() && fileNamePattern.matcher(file.getName()).find();
+		return fileNamePattern.matcher(file.getName()).find();
 	}
 	
 	/**
@@ -130,10 +209,10 @@ public class Logic {
 	 */
 	private void processFiles(List<File> files) throws IOException {
 		
-		// No files wrning
+		// No files warning
 		if(files.isEmpty()) {
 			
-			LOGGER.warn("No matching files in folder");
+			log.warn("No matching files in folder");
 			return;
 		}
 		
@@ -144,7 +223,7 @@ public class Logic {
 		// No need to do anything if already lower than expected files
 		if(files.size() <= numberMostRecentFilesToKeep) {
 			
-			LOGGER.info("No need to archive: {} files in directory ({} most recent files to be kept)", files.size(), numberMostRecentFilesToKeep);
+			log.info("No need to archive: {} files in directory ({} most recent files to be kept)", files.size(), numberMostRecentFilesToKeep);
 			return;
 		}
 		
@@ -188,12 +267,12 @@ public class Logic {
 		
 		if(properties.isSafeMode()) {
 			
-			LOGGER.info("[Safe Mode] I would move \"{}\" to \"{}\"", file.getAbsolutePath(), targetDirectory.getAbsolutePath());
+			log.info("[Safe Mode] This would move \"{}\" to \"{}\"", file.getAbsolutePath(), targetDirectory.getAbsolutePath());
 		}
 		else {
 			
 			Files.move(Paths.get(file.getAbsolutePath()), Paths.get(targetDirectory.getAbsolutePath() + File.separator + file.getName()));
-			LOGGER.info("Moved \"{}\" to \"{}\"", file.getAbsolutePath(), targetDirectory.getAbsolutePath());
+			log.info("Moved \"{}\" to \"{}\"", file.getAbsolutePath(), targetDirectory.getAbsolutePath());
 		}
 	}
 
@@ -205,12 +284,12 @@ public class Logic {
 		
 		if(properties.isSafeMode()) {
 			
-			LOGGER.info("[Safe Mode] I would delete \"{}\"", file.getAbsolutePath());
+			log.info("[Safe Mode] This would delete \"{}\"", file.getAbsolutePath());
 		}
 		else {
 
 			Files.delete(Paths.get(file.getAbsolutePath()));
-			LOGGER.info("Deleted \"{}\"", file.getAbsolutePath());
+			log.info("Deleted \"{}\"", file.getAbsolutePath());
 		}
 	}
 }
