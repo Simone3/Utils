@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
@@ -22,9 +21,6 @@ import org.springframework.util.Assert;
 
 import com.utils.generated.ContactRecords;
 import com.utils.generated.ContactRecords.Contact;
-import com.utils.generated.ContactRecords.Contact.Emails.Email;
-import com.utils.generated.ContactRecords.Contact.Phones.Phone;
-import com.utils.generated.ContactRecords.Contact.StructuredName;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,25 +36,25 @@ public class UtilLogicRunner implements CommandLineRunner {
 		
 		Assert.isTrue(args != null && args.length == 2, "Util requires 2 arguments, source and target files");
 		
-		File sourceFile = getSourceFile(args);
-		File targetFile = getTargetFile(args);
+		var sourceFile = getSourceFile(args);
+		var targetFile = getTargetFile(args);
 
-		ContactRecords contactRecords = parseSourceFile(sourceFile);
+		var contactRecords = parseSourceFile(sourceFile);
 		if(contactRecords == null || contactRecords.getContact() == null || contactRecords.getContact().isEmpty()) {
 			
 			log.warn("No contact found");
 			return;
 		}
 		
-		List<MappedContact> mappedContacts = mapContacts(contactRecords);
+		var mappedContacts = mapContacts(contactRecords);
 		
 		writeContacts(mappedContacts, targetFile);
 	}
 
 	private File getSourceFile(String... args) {
 		
-		String sourceFilePath = args[0];
-		File sourceFile = new File(sourceFilePath);
+		var sourceFilePath = args[0];
+		var sourceFile = new File(sourceFilePath);
 		
 		Assert.isTrue(sourceFile.exists(), "Source file does not exist");
 		Assert.isTrue(sourceFile.isFile(), "Source file is not a file");
@@ -68,8 +64,8 @@ public class UtilLogicRunner implements CommandLineRunner {
 
 	private File getTargetFile(String... args) {
 		
-		String targetFilePath = args[1];
-		File targetFile = new File(targetFilePath);
+		var targetFilePath = args[1];
+		var targetFile = new File(targetFilePath);
 		
 		if(targetFile.exists()) {
 			
@@ -86,9 +82,9 @@ public class UtilLogicRunner implements CommandLineRunner {
 		
 		log.info("Start parsing {}", sourceFile.getAbsolutePath());
 
-		JAXBContext jaxbContext = JAXBContext.newInstance(ContactRecords.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		ContactRecords contactRecords = (ContactRecords) jaxbUnmarshaller.unmarshal(sourceFile);
+		var jaxbContext = JAXBContext.newInstance(ContactRecords.class);
+		var jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		var contactRecords = (ContactRecords) jaxbUnmarshaller.unmarshal(sourceFile);
 
 		log.info("Parsed {}", sourceFile.getAbsolutePath());
 		
@@ -100,11 +96,11 @@ public class UtilLogicRunner implements CommandLineRunner {
 		Map<String, MappedContact> mappedContactsMap = new HashMap<>();
 		for(Contact contact: contactRecords.getContact()) {
 			
-			MappedContact mappedContact = mapContact(contact);
+			var mappedContact = mapContact(contact);
 			if(mappedContact != null) {
 				
-				String name = mappedContact.getName();
-				MappedContact existingMappedContact = mappedContactsMap.get(name);
+				var name = mappedContact.getName();
+				var existingMappedContact = mappedContactsMap.get(name);
 				if(existingMappedContact == null) {
 					
 					mappedContactsMap.put(name, mappedContact);
@@ -116,7 +112,10 @@ public class UtilLogicRunner implements CommandLineRunner {
 			}
 		}
 		
-		return mappedContactsMap.values().stream().sorted(Comparator.comparing(MappedContact::getName)).collect(Collectors.toList());
+		return mappedContactsMap.values()
+			.stream()
+			.sorted(Comparator.comparing(MappedContact::getName))
+			.collect(Collectors.toList());
 	}
 
 	private MappedContact mapContact(Contact contact) {
@@ -126,10 +125,10 @@ public class UtilLogicRunner implements CommandLineRunner {
 			return null;
 		}
 		
-		MappedContact mappedContact = new MappedContact();
+		var mappedContact = new MappedContact();
 		
 		mappedContact.setName("");
-		StructuredName structuredName = contact.getStructuredName();
+		var structuredName = contact.getStructuredName();
 		if(structuredName != null) {
 			
 			List<String> nameValues = new ArrayList<>();
@@ -157,11 +156,11 @@ public class UtilLogicRunner implements CommandLineRunner {
 		
 		if(contact.getPhones() != null && contact.getPhones().getPhone() != null) {
 			
-			for(Phone phone: contact.getPhones().getPhone()) {
+			for(var phone: contact.getPhones().getPhone()) {
 				
 				if(phone != null && !StringUtils.isBlank(phone.getNumber())) {
 					
-					String number = phone.getNumber().replace(" ", "").replace("-", "").replace("+39", "");
+					var number = phone.getNumber().replace(" ", "").replace("-", "").replace("+39", "");
 					
 					if(!Pattern.compile("\\d+").matcher(number).matches()) {
 						
@@ -175,7 +174,7 @@ public class UtilLogicRunner implements CommandLineRunner {
 		
 		if(contact.getEmails() != null && contact.getEmails().getEmail() != null) {
 			
-			for(Email email: contact.getEmails().getEmail()) {
+			for(var email: contact.getEmails().getEmail()) {
 				
 				if(email != null && !StringUtils.isBlank(email.getAddress())) {
 					
@@ -206,13 +205,13 @@ public class UtilLogicRunner implements CommandLineRunner {
 		
 		log.info("Writing {} unique contacts to {}", mappedContacts.size(), targetFile.getAbsolutePath());
 		
-		FileOutputStream fos = new FileOutputStream(targetFile);
-		OutputStreamWriter osw = new OutputStreamWriter(fos);
-		try(BufferedWriter bw = new BufferedWriter(osw)) {
+		var fos = new FileOutputStream(targetFile);
+		var osw = new OutputStreamWriter(fos);
+		try(var bw = new BufferedWriter(osw)) {
 	 
-			for(MappedContact mappedContact: mappedContacts) {
+			for(var mappedContact: mappedContacts) {
 
-				String row = mappedContactToTargetFileRow(mappedContact);
+				var row = mappedContactToTargetFileRow(mappedContact);
 				bw.write(row);
 				bw.newLine();
 			}
