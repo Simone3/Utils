@@ -3,7 +3,7 @@ param(
 )
 
 # Prompt user
-$newFileName = Read-Host -Prompt 'New File Name'
+$newFileName = Read-Host -Prompt 'New File Name (ideally no spaces!)'
 
 # File
 $htmlFile = "./skeleton.html"

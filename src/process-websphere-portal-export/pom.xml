@@ -6,7 +6,7 @@
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>Process WebSphere Portal Export</name>
+	<name>ProcessWebSpherePortalExport</name>
 	<description>"Fixes" a WebSphere Portal page export XML</description>
 
 	<properties>

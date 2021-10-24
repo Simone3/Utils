@@ -6,7 +6,7 @@
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>Rename Files From List</name>
+	<name>RenameFilesFromList</name>
 	<description>Util to rename all files in a folder given a list of new names</description>
 
 	<properties>

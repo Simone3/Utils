@@ -4,7 +4,7 @@ targetDirectory="$1"
 
 # Prompt user
 read -p "Folder Name / Maven Artifact (no spaces!): " newProjectId
-read -p "Application Name: " newProjectName
+read -p "Application Name (ideally no spaces!): " newProjectName
 read -p "Application Description: " newProjectDescription
 
 # Check input

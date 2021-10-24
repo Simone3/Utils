@@ -4,7 +4,7 @@ param(
 
 # Prompt user
 $newProjectId = Read-Host -Prompt 'Folder Name / Maven Artifact (no spaces!)'
-$newProjectName = Read-Host -Prompt 'Application Name'
+$newProjectName = Read-Host -Prompt 'Application Name (ideally no spaces!)'
 $newProjectDescription = Read-Host -Prompt 'Application Description'
 
 # Folders

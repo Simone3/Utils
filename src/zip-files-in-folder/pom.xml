@@ -6,7 +6,7 @@
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
-	<name>Zip Files In Folder</name>
+	<name>ZipFilesInFolder</name>
 	<description>Util to ZIP all files in a folder</description>
 
 	<properties>
