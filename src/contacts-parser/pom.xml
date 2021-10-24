@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.6</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.utils</groupId>
+	<artifactId>contacts-parser</artifactId>
+	<version>1.0.0</version>
+
+	<name>ContactsParser</name>
+	<description>Contacts XML parser</description>
+	
+	<properties>
+
+		<!-- Standard project settings -->
+		<java.version>1.8</java.version>
+
+		<!-- Executable "installation" folder and name -->
+		<copy.final.jar.folder>../../utils</copy.final.jar.folder>
+		<copy.final.jar.name>${project.name}</copy.final.jar.name>
+
+	</properties>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+
+		<finalName>${project.artifactId}</finalName>
+
+		<plugins>
+
+			<!-- Spring Boot -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<!-- Copy executable JAR to the desired folder -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>PackageCopies</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy
+									file="${project.build.directory}/${project.artifactId}.jar"
+									tofile="${copy.final.jar.folder}/${copy.final.jar.name}.jar"
+								/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		
+			<!-- XML classes generator from XSD -->
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-xjc-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>xsdtojava</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<xsdOptions>
+						<xsdOption>
+							<xsd>${basedir}/src/main/resources/schemas/contacts.xsd</xsd>
+							<packagename>com.utils.generated</packagename>
+						</xsdOption>
+					</xsdOptions>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>

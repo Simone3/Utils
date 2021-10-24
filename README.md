@@ -2,6 +2,7 @@
 Just a random set of very simple utility apps:
 - [Archive Older Files](https://github.com/Simone3/Utils/raw/master/utils/Archive%20Older%20Files.jar): moves or deletes all files in a source directory that match a given RegEx, keeping the N most recent ones.
 - [Clone And Rename Folder](https://github.com/Simone3/Utils/raw/master/utils/Clone%20And%20Rename%20Folder.ps1): script to clone a folder and then 1) replace one or more strings in all file/folder names and 2) replace one or more strings inside all file contents.
+- [Contacts Parser](https://github.com/Simone3/Utils/raw/master/utils/ContactsParser.jar): transforms a contacts XML into a tab-separated text file
 - [Edit WAR File](https://github.com/Simone3/Utils/raw/master/utils/Edit%20WAR%20File.ps1): script to edit the contents of a WAR file (search & replace in text files, copy new files).
 - [Lines Filter](https://github.com/Simone3/Utils/raw/master/utils/Lines%20Filter.html): filters a multi-line text by row number and/or row content.
 - [Process WebSphere Portal Export](https://github.com/Simone3/Utils/raw/master/utils/Process%20WebSphere%20Portal%20Export.jar): the WebSphere Portal allows to export a page into an XML. This util parses that XML to remove ID references and to add/change some permission elements and attributes.
