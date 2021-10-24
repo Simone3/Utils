@@ -4,6 +4,7 @@ Just a random set of very simple utility apps:
 - [Clone And Rename Folder](https://github.com/Simone3/Utils/raw/master/utils/CloneAndRenameFolder.ps1): script to clone a folder and then 1) replace one or more strings in all file/folder names and 2) replace one or more strings inside all file contents.
 - [Contacts Parser](https://github.com/Simone3/Utils/raw/master/utils/ContactsParser.jar): transforms a contacts XML into a tab-separated text file
 - [Edit WAR File](https://github.com/Simone3/Utils/raw/master/utils/EditWARFile.ps1): script to edit the contents of a WAR file (search & replace in text files, copy new files).
+- [Email Backup Parser](https://github.com/Simone3/Utils/raw/master/utils/EmailBackupParser.jar): transforms an email backup file into a tab-separated text file
 - [Lines Filter](https://github.com/Simone3/Utils/raw/master/utils/LinesFilter.html): filters a multi-line text by row number and/or row content.
 - [Process WebSphere Portal Export](https://github.com/Simone3/Utils/raw/master/utils/ProcessWebSpherePortalExport.jar): the WebSphere Portal allows to export a page into an XML. This util parses that XML to remove ID references and to add/change some permission elements and attributes.
 - [Rename Files From List](https://github.com/Simone3/Utils/raw/master/utils/RenameFilesFromList.jar): this util renames a set of files given a list of new file names.
