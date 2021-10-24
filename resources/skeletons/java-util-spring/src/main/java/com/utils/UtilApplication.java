@@ -4,14 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import com.utils.logic.Properties;
+import com.utils.config.Properties;
 
 @SpringBootApplication
 @EnableConfigurationProperties(Properties.class)
-public class Application {
+public class UtilApplication {
 
 	public static void main(String[] args) {
 		
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(UtilApplication.class, args);
 	}
 }

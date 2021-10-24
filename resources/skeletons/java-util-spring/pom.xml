@@ -6,21 +6,21 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.0</version>
-		<relativePath/>
+		<version>2.5.6</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>com.utils</groupId>
 	<artifactId>#REPLACE_PROJECT_ID#</artifactId>
 	<version>1.0.0</version>
-	<packaging>jar</packaging>
 
 	<name>#REPLACE_PROJECT_NAME#</name>
 	<description>#REPLACE_PROJECT_DESCRIPTION#</description>
+	
 	<properties>
 
 		<!-- Standard project settings -->
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
 
 		<!-- Executable "installation" folder and name -->
 		<copy.final.jar.folder>../../utils</copy.final.jar.folder>
@@ -29,7 +29,7 @@
 	</properties>
 
 	<dependencies>
-
+	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -39,14 +39,19 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
 		</dependency>
 
 		<dependency>
@@ -63,21 +68,10 @@
 
 		<plugins>
 
-			<!-- Package as executable JAR with dependencies -->
+			<!-- Spring Boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-						<configuration>
-							<classifier>spring-boot</classifier>
-							<mainClass>com.utils.Application</mainClass>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- Copy executable JAR to the desired folder -->

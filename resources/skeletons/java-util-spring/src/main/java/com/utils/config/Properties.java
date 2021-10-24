@@ -1,4 +1,4 @@
-package com.utils.logic;
+package com.utils.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
