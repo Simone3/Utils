@@ -20,7 +20,7 @@
 	<properties>
 
 		<!-- Standard project settings -->
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 
 		<!-- Executable "installation" folder and name -->
 		<copy.final.jar.folder>../../utils</copy.final.jar.folder>
@@ -48,10 +48,6 @@
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
 		</dependency>
 
 		<dependency>
