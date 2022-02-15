@@ -1,0 +1,52 @@
+
+disable-jenkins-invocations: true # disable actual Jenkins API calls, for test purposes
+
+print-password: false # show password as plaintext on screen
+
+insecure-https: false # skip certificate validation
+
+timeout-milliseconds: 5000 # timeout in milliseconds for Jenkins API calls
+
+jenkins:
+  base-url: 'http://myjenkins.com' # main Jenkins host
+  crumb-url: '/crumbIssuer/api/json' # relative path for crumb issuer
+  username: 'my-user' # Jenkins username
+  password: 'my-password' # Jenkins password
+  categories:
+    -
+      name: 'My First Category' # custom category name
+      builds:
+        -
+          name: 'My First Build' # custom build name
+          url: '/job/my-path-1/job/my-build-1/buildWithParameters' # relative path for build
+          parameters:
+            -
+              key: 'My_Param' # build parameter name
+              value: 'test' # static build parameter definition with fixed value 'myValue'
+            -
+              key: 'This_Param'
+              askMe: true # dynamic build parameter definition: app will prompt for 'This_Param' value at run-time
+            -
+              key: 'Other_Param'
+              value: 'sample'
+        -
+          name: 'My Second Build'
+          url: '/job/my-build-2/buildWithParameters'
+          parameters:
+            -
+              key: 'Test'
+              askMe: true
+            -
+              key: 'OtherTest'
+              askMe: true
+              remove-whitespace: true # all spaces and invisible characters will be removed from parameter value
+    -
+      name: 'My Second Category'
+      builds:
+        -
+          name: 'My Third Build'
+          url: '/job/my-path-2/job/my-build-3/buildWithParameters'
+          parameters:
+            -
+              key: 'SampleKey'
+              value: 'Sample Value'
