@@ -1,8 +1,0 @@
-
-logging:
-  level:
-    root: OFF
-
-spring:
-  main:
-    web-application-type: none
