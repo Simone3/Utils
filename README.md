@@ -15,4 +15,7 @@ Just a random set of very simple utility apps:
 - [TV Show Names](https://github.com/Simone3/Utils/raw/master/utils/TVShowNames.html): extracts episode names from a "List of ... episodes" Wikipedia page.
 - [Unwrap Text](https://github.com/Simone3/Utils/raw/master/utils/UnwrapText.html): transforms a multi-line source text into a single-line target text.
 - [URL Encode](https://github.com/Simone3/Utils/raw/master/utils/URLEncode.html): encodes or decodes a string for/from an URL, useful for GET parameters with special URL characters.
+- [Video Resolution Printer](https://github.com/Simone3/Utils/raw/master/utils/VideoResolutionPrinter.jar): prints resolutions (w x h and a guess for 720p, 1080p, etc.) of videos inside a folder.
 - [Zip Files In Folder](https://github.com/Simone3/Utils/raw/master/utils/ZipFilesInFolder.jar): this util compresses a set of files in a configurable number of ZIP files.
+
+
