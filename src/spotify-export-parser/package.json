@@ -1,0 +1,23 @@
+{
+  "name": "spotify-export-parser",
+  "version": "1.0.0",
+  "description": "Spotify Export Parser Util",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "build": "esbuild index.js --bundle --platform=node --outfile=../../utils/SpotifyExportParser.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint '**/*.js'"
+  },
+  "dependencies": {
+    "commander": "12.1.0",
+    "write-excel-file": "2.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.8.0",
+    "esbuild": "0.23.0",
+    "eslint": "9.8.0",
+    "globals": "15.9.0"
+  }
+}
