@@ -1,0 +1,22 @@
+{
+  "name": "#REPLACE_PROJECT_ID#",
+  "version": "1.0.0",
+  "description": "#REPLACE_PROJECT_DESCRIPTION#",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "build": "esbuild index.js --bundle --platform=node --outfile=../../utils/#REPLACE_PROJECT_NAME#.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint '**/*.js'"
+  },
+  "dependencies": {
+
+  },
+  "devDependencies": {
+    "@eslint/js": "9.8.0",
+    "esbuild": "0.23.0",
+    "eslint": "9.8.0",
+    "globals": "15.9.0"
+  }
+}
